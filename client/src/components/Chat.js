@@ -7,7 +7,11 @@ export default class Chat extends Component {
     // TODO: Render scrolling chat log of previous messages
     // TODO: Enter chat into input tag and send by hitting enter or clicking send
 
-    return (null);
+    return (
+      <div className='Chat'>
+
+      </div>
+    );
   }
 
   keyPressed = () => {

@@ -1,0 +1,8 @@
+.App {
+  display: flex;
+  flex-direction: row;
+}
+
+.App .VideoChat {
+  flex-grow: 1;
+}

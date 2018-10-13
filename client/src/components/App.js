@@ -11,9 +11,9 @@ import './App.css';
 class App extends Component {
   render() {
     return (
-      <div>
+      <div className='App'>
         <Users />
-        <div>
+        <div className='VideoChat'>
           <Video />
           <Chat />
         </div>

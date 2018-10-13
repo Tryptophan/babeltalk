@@ -9,7 +9,10 @@ export default class Users extends Component {
     // TOOD: If user is currently in a call and calls another user, end the current call
     // TODO: Render an end call button instead of call if
 
-    return (null);
+    return (
+      <div className='Users'>
+      </div>
+    );
   }
 }
 
