@@ -27,16 +27,42 @@ io.on('connection', (client) => {
 
   // Send chat message
   client.on('chat', chat => {
+    chat.key = Date.now();
+    console.log("server chat");
     console.log(chat);
+    console.log(client.rooms[0]);
+    for (let room in client.rooms) {
+      if (room !== client.id) {
+        io.to(room).emit('chat', chat);
+      }
+    }
   });
 
   // Call another user
   client.on('call', call => {
     console.log(call);
+    console.log("calling user pt2");
+    // Connect both to and from id's to a room (unique room id)
+    client.join(call.to + call.from);
+    io.to(call.to).emit("call", call);
   });
 
+  // client.on('hangup', call => {
+  //   io.sockets.clients(call.to + call.from).forEach(function (socketClient) {
+  //     socketClient.leave(call.to + call.from);
+  //   });
+  // });
+
+  client.on('answeredCall', call => {
+    client.join(call.to + call.from);
+    console.log("answered");
+  });
+
+  client.on('declinedcall', call => {
+    client.leave(call.to + call.from);
+  });
   /* WebRTC signalling */
-  
+
   // Got offer from peer
   client.on('offer', offer => {
     console.log(offer);
