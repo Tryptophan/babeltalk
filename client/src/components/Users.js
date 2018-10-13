@@ -9,7 +9,7 @@ export default class Users extends Component {
     this.props.socket.on('addUser', this.addUser);
     this.props.socket.on('removeUser', this.removeUser);
     this.state = {
-      users: this.props.initialUsers
+      users: []
     };
   }
   addUser = (user) => {
