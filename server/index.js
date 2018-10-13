@@ -1,4 +1,5 @@
 const io = require('socket.io')();
+require('dotenv').config();
 
 // Array of clients to hold state
 let users = [];
@@ -52,6 +53,7 @@ io.on('connection', (client) => {
   //     socketClient.leave(call.to + call.from);
   //   });
   // });
+
 
   client.on('answeredCall', call => {
     client.join(call.to + call.from);
