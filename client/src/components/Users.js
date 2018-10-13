@@ -90,6 +90,7 @@ class User extends Component {
       this.socket.emit('hangup', { to: this.props.id, from: this.props.parentUser }); // handled on server
     }
     else { // if no connection is open
+      console.log("calling another user pt 1");
       this.socket.emit('call', { to: this.props.id, from: this.props.parentUser }); // handled on server
     }
 
