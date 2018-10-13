@@ -6,6 +6,15 @@
   height: 70vh;
 }
 
+.Local {
+  position: absolute;
+  height: 25vh;
+  right: 30px;
+  bottom: 30px;
+  display: flex;
+  align-content: center;
+}
+
 .Video .Controls {
   position: absolute;
   bottom: 30px;

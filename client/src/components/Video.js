@@ -27,21 +27,16 @@ export default class Video extends Component {
     return (
       <div className='Video'>
         {/* Video tag to render the video stream */}
-        <video ref={el => { this.video = el }} autoPlay />
+        <video ref={el => { this.video = el }} autoPlay muted={this.state.toggleMic} />
+        <video className='Local' ref={el => { this.localVideo = el }} autoPlay muted={true} />
         {/* Absolute positioned controls (mute mic, mute video, end call) */}
         <div className='Controls'>
           <div onClick={this.toggleMic}>{this.state.mic ? <FaMicrophoneSlash /> : <FaMicrophone />}</div>
           <div onClick={this.toggleCamera}>{this.state.camera ? <FaVideoSlash /> : <FaVideo />}</div>
           <div className='Hangup'><FaPhone /></div>
         </div>
-      </div>
+      </div >
     );
-  }
-
-  componentDidMount() {
-    navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(stream => {
-      this.video.srcObject = stream;
-    });
   }
 
   // Toggle muting mic
@@ -72,28 +67,47 @@ export default class Video extends Component {
 
   // Send offer to the peer to peer using sockets
   onAnsweredCall = (call) => {
-    console.log('Other user answered call.');
-    this.peer = new Peer({
-      initiator: true
-    });
 
-    this.peer.on('signal', offer => {
-      this.socket.emit('offer', { offer: offer, ...call });
+    navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
+      console.log('test')
+      this.localVideo.srcObject = localStream;
+
+      this.peer = new Peer({
+        initiator: true,
+        stream: localStream
+      });
+
+      this.peer.on('signal', offer => {
+        this.socket.emit('offer', { offer: offer, ...call });
+      });
+
+      this.peer.on('stream', remoteStream => {
+        this.video.srcObject = remoteStream;
+      });
     });
   }
 
   onOffer = (data) => {
 
-    this.peer = new Peer();
-    this.peer.signal(data.offer);
+    if (!this.peer) {
+      navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
 
-    this.peer.on('signal', answer => {
-      this.socket.emit('answer', { answer: answer, to: data.to, from: data.from });
-    });
+        this.localVideo.srcObject = localStream;
+        this.peer = new Peer({
+          initiator: false,
+          stream: localStream
+        });
+        this.peer.signal(data.offer);
 
-    this.peer.on('connect', () => {
-      console.log('connect');
-    });
+        this.peer.on('signal', answer => {
+          this.socket.emit('answer', { answer: answer, to: data.to, from: data.from });
+        });
+
+        this.peer.on('stream', remoteStream => {
+          this.video.srcObject = remoteStream;
+        });
+      });
+    }
   }
 
   onAnswer = (data) => {
