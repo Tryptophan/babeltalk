@@ -6,6 +6,7 @@ export default class Users extends Component {
   constructor(props) {
 
     this.props.socket.on('addUser', this.addUser);
+    this.props.socket.on('removeUser', this.removeUser);
     super(props);
     this.state = {
       users: this.props.initialUsers
