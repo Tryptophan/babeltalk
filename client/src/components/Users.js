@@ -2,6 +2,36 @@ import React, { Component } from 'react';
 import './Users.css';
 
 export default class Users extends Component {
+
+  constructor(props) {
+
+    this.props.socket.on('addUser', this.addUser);
+    super(props);
+    this.state = {
+      users: this.props.initialUsers
+    };
+
+
+
+  }
+  addUser = (user) => {
+    this.setState({
+      users: this.state.users.concat(user)
+    });
+  }
+  removeUser = (user) => {
+    let users = this.state.users;
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].id === user.id) {
+        users.splice(i, 1);
+      }
+    }
+    this.setState({
+      users: users
+    });
+
+  }
+
   render() {
 
     // TODO: Render users by mapping each user to a list item <li> in an unordered list <ul> of users
@@ -9,8 +39,14 @@ export default class Users extends Component {
     // TOOD: If user is currently in a call and calls another user, end the current call
     // TODO: Render an end call button instead of call if
 
+    let socket = this.props.socket;
+    let users = this.state.users.map(user => (<User username={user.username} socket={socket}></User>));
+
+    console.log(this.state.users);
     return (
       <div className='Users'>
+        <ul></ul>
+
       </div>
     );
   }
@@ -18,15 +54,57 @@ export default class Users extends Component {
 
 // Single user component (rendered many times in Users)
 class User extends Component {
+  constructor() {
+
+    super();
+
+
+    function getState() {
+      return this.state;
+    }
+    this.socket.on('onClick', (onClick) => {
+      console.log("User has called somebody.");
+      this.setState(state => ({
+        callState: !state.callState
+      }));
+    });
+  }
+
   render() {
 
     // TODO: Render a call button and the user's name (this.props.username)
 
-    return (null);
+    let userSocket = this.props.socket;
+    let username = this.props.username;
+    return (
+      <div>
+        <a onClick={this.call()}>
+          this is a user
+        </a>
+      </div>
+    );
   }
 
   // TODO: Handle a click event on the call button and send a socket event with thier username
-  call = () => {
+  call = (event) => {
+
+
+    if (this.getState() == { callState: true }) { // if some sort of connection is already open
+      this.hangUp();
+      this.state.callState = false;
+    }
+  }
+
+  // onClick = (event) => {
+  //   if (event.onClick) {
+
+  //   }
+
+  // }
+
+  hangUp = (state) => {
 
   }
+
+
 }
