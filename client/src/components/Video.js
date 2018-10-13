@@ -72,20 +72,31 @@ export default class Video extends Component {
 
   // Send offer to the peer to peer using sockets
   onAnsweredCall = (call) => {
-    let peer = new Peer({
+    console.log('Other user answered call.');
+    this.peer = new Peer({
       initiator: true
     });
 
-    peer.on('signal', offer => {
+    this.peer.on('signal', offer => {
       this.socket.emit('offer', { offer: offer, ...call });
     });
   }
 
-  onOffer = (offer) => {
-    console.log(offer);
+  onOffer = (data) => {
+
+    this.peer = new Peer();
+    this.peer.signal(data.offer);
+
+    this.peer.on('signal', answer => {
+      this.socket.emit('answer', { answer: answer, to: data.to, from: data.from });
+    });
+
+    this.peer.on('connect', () => {
+      console.log('connect');
+    });
   }
 
   onAnswer = (data) => {
-
+    this.peer.signal(data.answer);
   }
 }

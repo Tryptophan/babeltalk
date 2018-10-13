@@ -55,22 +55,26 @@ io.on('connection', (client) => {
 
   client.on('answeredCall', call => {
     client.join(call.to + call.from);
-    console.log("answered");
+    io.to(call.from).emit('answeredCall', call);
   });
 
-  client.on('declinedcall', call => {
+  client.on('declinedCall', call => {
     client.leave(call.to + call.from);
+    io.to(call.from).emit('declinedCall', call);
   });
+
   /* WebRTC signalling */
 
   // Got offer from peer
-  client.on('offer', offer => {
-    console.log(offer);
+  client.on('offer', data => {
+    console.log(data);
+    io.to(data.to).emit('offer', data);
   });
 
   // Got answer from peer
-  client.on('answer', answer => {
-    console.log(answer);
+  client.on('answer', data => {
+    console.log(data);
+    io.to(data.from).emit('answer', data);
   });
 });
 
