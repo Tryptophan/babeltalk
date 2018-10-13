@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { FaMicrophoneSlash, FaVideoSlash, FaPhone } from 'react-icons/fa';
-import './VideoCall.css';
+import './Video.css';
 
-export default class VideoCall extends Component {
+export default class Video extends Component {
 
   render() {
     return (
-      <div className='VideoCall'>
+      <div className='Video'>
         {/* Video tag to render the video stream */}
         {/* <div> */}
         <video ref={el => { this.video = el }} autoPlay />
@@ -44,6 +44,6 @@ export default class VideoCall extends Component {
   }
 
   sendTranscript = () => {
-    
+
   }
 }

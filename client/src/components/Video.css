@@ -1,11 +1,12 @@
-.VideoCall {
+.Video {
   background-color: black;
   display: flex;
   justify-content: center;
   position: relative;
+  height: 70vh;
 }
 
-.VideoCall .Controls {
+.Video .Controls {
   position: absolute;
   bottom: 30px;
   display: flex;
@@ -13,7 +14,7 @@
   width: 30%;
 }
 
-.VideoCall .Controls div {
+.Video .Controls div {
   color: white;
   background-color: red;
   height: 40px;
@@ -22,15 +23,15 @@
   border-radius: 100%;
 }
 
-.VideoCall .Controls div svg {
+.Video .Controls div svg {
   width: 40px;
   height: 40px;
 }
 
-.VideoCall video {
+.Video video {
   background-color: black;
 }
 
-.VideoCall .Controls .Hangup {
+.Video .Controls .Hangup {
   transform: rotate(225deg);
 }
