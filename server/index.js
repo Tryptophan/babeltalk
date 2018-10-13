@@ -1,13 +1,27 @@
 const io = require('socket.io')();
 
-// Array of users to hold state
+// Array of clients to hold state
 let users = [];
 
 io.on('connection', (client) => {
 
-  // Send array of users to the client
-  client.on('users', () => {
-    io.to(client.id).emit(users);
+  client.on('join', user => {
+    console.log(user);
+    // Send the current array of users to the client
+    client.emit('addUser', users);
+    // Add the user to the map
+    user.id = client.id;
+    users.push(user);
+  });
+
+  client.on('disconnect', () => {
+    // Remove user from array and tell other clients to remove it
+    for (let i = 0; i < users.length; i++) {
+      if (client.id === user.id) {
+        client.broadcast.emit('removeUser', users[i]);
+        users.splice(i, 1);
+      }
+    }
   });
 
   // Send chat message
