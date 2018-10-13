@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
-import { FaMicrophoneSlash, FaVideoSlash, FaPhone } from 'react-icons/fa';
+import { FaMicrophoneSlash, FaVideoSlash, FaPhone, FaMicrophone, FaVideo } from 'react-icons/fa';
 import './Video.css';
 
 export default class Video extends Component {
+
+  constructor() {
+    super();
+
+    this.state = {
+      mic: true,
+      camera: true
+    };
+  }
 
   render() {
     return (
@@ -13,8 +22,8 @@ export default class Video extends Component {
         {/* </div> */}
         {/* Absolute positioned controls (mute mic, mute video, end call) */}
         <div className='Controls'>
-          <div><FaMicrophoneSlash /></div>
-          <div><FaVideoSlash /></div>
+          <div onClick={this.toggleMic}>{this.state.mic ? <FaMicrophoneSlash /> : <FaMicrophone />}</div>
+          <div onClick={this.toggleCamera}>{this.state.camera ? <FaVideoSlash /> : <FaVideo />}</div>
           <div className='Hangup'><FaPhone /></div>
         </div>
       </div>
@@ -28,11 +37,15 @@ export default class Video extends Component {
   }
 
   toggleMic = () => {
-
+    this.setState({
+      mic: !this.state.mic
+    });
   }
 
   toggleCamera = () => {
-
+    this.setState({
+      camera: !this.state.camera
+    });
   }
 
   endCall = () => {
