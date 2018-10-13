@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 import Users from './Users';
 import Video from './Video';
 import Chat from './Chat';
+import Call from './Call';
 
 // CSS Import
 import './App.css';
@@ -23,6 +24,7 @@ class App extends Component {
   render() {
     return (
       <div className='App'>
+        <Call socket={this.socket} />
         <Users socket={this.socket} />
         <div className='VideoChat'>
           <Video socket={this.socket} />

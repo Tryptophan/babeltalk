@@ -1,0 +1,13 @@
+.Call {
+  position: absolute;
+  width: 400px;
+  height: 200px;
+  z-index: 999;
+  background-color: red;
+  top: 50%;
+  left: 50%;
+   /* Half the height */
+  margin-top: -100px;
+  /* Half the width */
+  margin-left: -200px;
+}

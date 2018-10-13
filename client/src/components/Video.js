@@ -1,25 +1,33 @@
 import React, { Component } from 'react';
 import { FaMicrophoneSlash, FaVideoSlash, FaPhone, FaMicrophone, FaVideo } from 'react-icons/fa';
+import Peer from 'simple-peer';
 import './Video.css';
 
 export default class Video extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       mic: true,
       camera: true
     };
+
+    this.socket = this.props.socket;
+
+    // Call we started was answered
+    this.socket.on('answeredCall', this.onAnsweredCall);
+
+    // WebRTC
+    this.socket.on('offer', this.onOffer);
+    this.socket.on('answer', this.onAnswer);
   }
 
   render() {
     return (
       <div className='Video'>
         {/* Video tag to render the video stream */}
-        {/* <div> */}
         <video ref={el => { this.video = el }} autoPlay />
-        {/* </div> */}
         {/* Absolute positioned controls (mute mic, mute video, end call) */}
         <div className='Controls'>
           <div onClick={this.toggleMic}>{this.state.mic ? <FaMicrophoneSlash /> : <FaMicrophone />}</div>
@@ -36,12 +44,14 @@ export default class Video extends Component {
     });
   }
 
+  // Toggle muting mic
   toggleMic = () => {
     this.setState({
       mic: !this.state.mic
     });
   }
 
+  // Toggle muting camera
   toggleCamera = () => {
     this.setState({
       camera: !this.state.camera
@@ -57,6 +67,25 @@ export default class Video extends Component {
   }
 
   sendTranscript = () => {
+
+  }
+
+  // Send offer to the peer to peer using sockets
+  onAnsweredCall = (call) => {
+    let peer = new Peer({
+      initiator: true
+    });
+
+    peer.on('signal', offer => {
+      this.socket.emit('offer', { offer: offer, ...call });
+    });
+  }
+
+  onOffer = (offer) => {
+    console.log(offer);
+  }
+
+  onAnswer = (data) => {
 
   }
 }
