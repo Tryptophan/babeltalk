@@ -23,7 +23,7 @@ export default class Chat extends Component {
     return (
       <div className='Chat'>
         <input ref={el => { this.input = el }} onKeyPress={this.onKeyPress} type='text' placeholder='Type here!' id='insertBox' />
-        <button id='sendBtn' onclick={this.sendClicked}>Send</button>
+        <button id='sendBtn' onClick={this.sendClicked}>Send</button>
       </div>
     );
   }
