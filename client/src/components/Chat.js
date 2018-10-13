@@ -22,9 +22,8 @@ export default class Chat extends Component {
 
     return (
       <div className='Chat'>
-        <input onKeyPress={this.onKeyPress} type='text' placeholder='Type here!' id='insertBox' />
+        <input ref={el => { this.input = el }} onKeyPress={this.onKeyPress} type='text' placeholder='Type here!' id='insertBox' />
         <button id='sendBtn' onclick={this.sendClicked}>Send</button>
-        <input ref={el => { this.input = el }} />
       </div>
     );
   }
