@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import io from 'socket.io-client';
 
 // Component Imports
 import Users from './Users';
@@ -9,13 +10,20 @@ import Chat from './Chat';
 import './App.css';
 
 class App extends Component {
+
+  constructor() {
+    super();
+
+    this.socket = io('http://localhost:3001');
+  }
+
   render() {
     return (
       <div className='App'>
-        <Users />
+        <Users socket={this.socket} />
         <div className='VideoChat'>
-          <Video />
-          <Chat />
+          <Video socket={this.socket} />
+          <Chat socket={this.socket} />
         </div>
       </div>
     );
