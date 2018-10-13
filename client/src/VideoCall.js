@@ -26,4 +26,24 @@ export default class VideoCall extends Component {
       this.video.srcObject = stream;
     });
   }
+
+  toggleMic = () => {
+
+  }
+
+  toggleCamera = () => {
+
+  }
+
+  endCall = () => {
+
+  }
+
+  receivedTranslation = () => {
+
+  }
+
+  sendTranscript = () => {
+    
+  }
 }
