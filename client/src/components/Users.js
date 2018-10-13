@@ -6,17 +6,28 @@ export default class Users extends Component {
   constructor(props) {
     super(props);
 
-    this.props.socket.on('addUser', this.addUser);
-    this.props.socket.on('removeUser', this.removeUser);
+    this.socket = this.props.socket;
+    this.socket.on('addUser', this.addUser);
+    this.socket.on('removeUser', this.removeUser);
+    this.socket.on('users', this.addInitialUsers);
+
     this.state = {
       users: []
     };
   }
+
+  addInitialUsers = (users) => {
+    this.setState({
+      users: this.state.users.concat(users)
+    });
+  }
+
   addUser = (user) => {
     this.setState({
       users: this.state.users.concat(user)
     });
   }
+
   removeUser = (user) => {
     let users = this.state.users;
     for (let i = 0; i < users.length; i++) {
@@ -27,7 +38,6 @@ export default class Users extends Component {
     this.setState({
       users: users
     });
-
   }
 
   render() {
@@ -38,13 +48,13 @@ export default class Users extends Component {
     // TODO: Render an end call button instead of call if
 
     let socket = this.props.socket;
-    let users = this.state.users.map(user => (<User username={user.username} id={user.id} parentUser={this.props.id} socket={socket}></User>));
+    let users = this.state.users.map(user => (
+      <User username={user.username} key={user.id} id={user.id} parentUser={this.socket.id} socket={socket}></User>
+    ));
 
-    console.log(this.state.users);
     return (
       <div className='Users'>
-        <ul></ul>
-
+        {users}
       </div>
     );
   }
@@ -52,61 +62,39 @@ export default class Users extends Component {
 
 // Single user component (rendered many times in Users)
 class User extends Component {
-  constructor() {
+  constructor(props) {
+    super(props);
 
-    super();
+    this.state = {
+      callState: false
+    };
 
-
-    this.socket.on('onClick', (onClick) => {
-      console.log("User has called somebody.");
-
-      this.socket.
-        this.setState(state => ({
-          callState: !state.callState
-        }));
-    });
+    this.socket = this.props.socket;
   }
 
   render() {
 
     // TODO: Render a call button and the user's name (this.props.username)
-
-    let userSocket = this.props.socket;
     let username = this.props.username;
     return (
       <div>
-        <a onClick={this.call}>
-          this is a user
-        </a>
+        <button onClick={this.call}>{this.state.callState ? 'Hangup' : 'Call'}</button>
+        <p>{username}</p>
       </div>
     );
   }
 
-  // TODO: Handle a click event on the call button and send a socket event with thier username
-  call = (event) => {
-
-
+  // Handle a click event on the call button and send a socket event with thier username
+  call = () => {
     if (this.state.callState) { // if some sort of connection is already open
-      this.socket.emit('hangUp', {to: this.props.id, from: this.props.parentUser }); // handled on server
-      
+      this.socket.emit('hangup', { to: this.props.id, from: this.props.parentUser }); // handled on server
     }
-    else{ // if no connection is open
-      this.socket.emit('call', {to: this.props.id, from: this.props.parentUser }); // handled on server
-
-    }    
+    else { // if no connection is open
+      this.socket.emit('call', { to: this.props.id, from: this.props.parentUser }); // handled on server
+    }
 
     this.setState(state => ({
       callState: !state.callState
     }));
   }
-
-  // onClick = (event) => {
-  //   if (event.onClick) {
-
-  //   }
-
-  // }
-
- 
-
 }

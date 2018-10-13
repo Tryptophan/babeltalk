@@ -15,6 +15,9 @@ class App extends Component {
     super();
 
     this.socket = io('http://localhost:3001');
+    this.socket.on('connect', () => {
+      this.socket.emit('join', { id: this.socket.id, username: this.socket.id });
+    });
   }
 
   render() {

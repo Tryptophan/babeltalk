@@ -7,19 +7,20 @@ io.on('connection', (client) => {
 
   client.on('join', user => {
     console.log(user);
+    io.to(client.id).emit('users', users);
     // Send the current array of users to the client
-    client.emit('addUser', users);
+    client.broadcast.emit('addUser', user);
     // Add the user to the map
-    user.id = client.id;
     users.push(user);
   });
 
   client.on('disconnect', () => {
     // Remove user from array and tell other clients to remove it
     for (let i = 0; i < users.length; i++) {
-      if (client.id === user.id) {
+      if (client.id === users[i].id) {
         client.broadcast.emit('removeUser', users[i]);
         users.splice(i, 1);
+        console.log(users);
       }
     }
   });
