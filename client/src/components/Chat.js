@@ -3,6 +3,26 @@ import './Chat.css';
 
 export default class Chat extends Component {
   render() {
+
+    // TODO: Render scrolling chat log of previous messages
+    // TODO: Enter chat into input tag and send by hitting enter or clicking send
+
     return (null);
+  }
+
+  keyPressed = () => {
+
+  }
+
+  sendClicked = () => {
+
+  }
+
+  receivedChat = () => {
+
+  }
+
+  sendChat = () => {
+
   }
 }
