@@ -9,7 +9,6 @@ export default class Chat extends Component {
     };
     this.socket = this.props.socket;
     this.socket.on('chat', this.receivedChat);
-    this.socket.on('call', this.onReceivedCall);
   }
   render() {
 
@@ -38,11 +37,6 @@ export default class Chat extends Component {
     }
 
   }
-
-  onReceivedCall = (call) => {
-    this.socket.emit('answeredCall', call);
-  }
-
 
   sendClicked = () => {
     this.sendChat(this.input.value);

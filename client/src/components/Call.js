@@ -16,7 +16,7 @@ export default class Call extends Component {
   }
 
   render() {
-    if (this.state.user) {
+    if (this.state.call) {
       return (
         <div className='Call'>
           {this.state.call.from} is calling you...<br />
