@@ -89,6 +89,9 @@ io.on('connection', (client) => {
     // know the OTHER PERSON'S lang
     // loop through users array, find the user, get their language preference, call translation
 
+    if (chat.message === '')
+      return;
+
     let senderLang = null;
     let receiverLang = null;
     let receiver = null;
