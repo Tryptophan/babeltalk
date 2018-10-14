@@ -8,13 +8,19 @@ export default class Call extends Component {
 
     this.socket = this.props.socket;
     this.socket.on('call', this.show);
-
+    
     this.state = {
       user: null,
       call: null
     };
+    // whenever a render is called
+    // whenever state.call != null
+    // html audio element.play
+    // whenever state.call == null 
+    // stop html audio element play
   }
-
+  // referencing audio element
+  // same way of getting references to input boxes in chat
   render() {
     if (this.state.call) {
       return (
@@ -22,6 +28,10 @@ export default class Call extends Component {
           {this.state.call.from} is calling you...<br />
           <button onClick={this.answerCall}>Answer</button>
           <button onClick={this.declineCall}>Decline</button>
+          <button onClick={this.playAudio} id="pling" ref={el=>{this.audio = el}} src="http://soundbible.com/mp3/Pling-KevanGC-1485374730.mp3">audio test</button>
+            {/* id="pling" ref={el => { this.audio = el }}
+            src="http://soundbible.com/mp3/Pling-KevanGC-1485374730.mp3">
+          </audio> */}
         </div>
       );
     } else {
@@ -29,7 +39,17 @@ export default class Call extends Component {
     }
   }
 
+
+  playAudio = (audio) => {
+      console.log("poo playing audio");
+      let sound = new Audio("http://soundbible.com/mp3/Pling-KevanGC-1485374730.mp3")
+      sound.play();
+  }
+
   show = (call) => {
+    this.ring = setInterval(() => {
+      this.playAudio();
+    }, 500);
     console.log(call);
     this.setState({
       call: call
@@ -37,12 +57,14 @@ export default class Call extends Component {
   }
 
   hide = () => {
+    clearInterval(this.ring);
     this.setState({
       call: null
     });
   }
 
   answerCall = () => {
+
     this.socket.emit('answeredCall', this.state.call);
     this.hide();
   }
@@ -51,4 +73,5 @@ export default class Call extends Component {
     this.socket.emit('declinedCall', this.state.call);
     this.hide();
   }
+
 }
