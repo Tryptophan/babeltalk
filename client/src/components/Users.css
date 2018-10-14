@@ -1,5 +1,28 @@
 .Users {
-  background-color: blue;
-  width: 18%;
+  min-width: 20%;
   height: 100vh;
+}
+
+.User {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.CallUser, .HangupUser {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  padding: 10px;
+  color: white;
+}
+
+.CallUser {
+  background-color: green;
+}
+
+.HangupUser {
+  background-color: red;
+  transform: rotate(225deg);
 }

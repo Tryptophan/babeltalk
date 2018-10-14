@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FaMicrophoneSlash, FaVideoSlash, FaPhone, FaMicrophone, FaVideo } from 'react-icons/fa';
+import { FaPhone, FaMicrophone } from 'react-icons/fa';
 import Peer from 'simple-peer';
 import './Video.css';
 
@@ -9,8 +9,7 @@ export default class Video extends Component {
     super(props);
 
     this.state = {
-      mic: true,
-      camera: true,
+      recording: false,
       leftSubtitles: [],
       rightSubtitles: [],
       interimTranscript: ''
@@ -30,8 +29,6 @@ export default class Video extends Component {
 
     // Speech
     this.recognition = new window.webkitSpeechRecognition();
-    this.recognition.continuous = true;
-    this.recognition.lang = 'en';
     this.recognition.interimResults = true;
     this.recognition.onresult = this.onTranscript;
 
@@ -41,11 +38,11 @@ export default class Video extends Component {
   render() {
 
     let leftSubtitles = this.state.leftSubtitles.map(transcript => (
-      <div key={Date.now()} className='Subtitle'>{transcript}</div>
+      <div key={Date.now() + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} className='Subtitle'>{transcript}</div>
     ));
 
     let rightSubtitles = this.state.rightSubtitles.map(transcript => (
-      <div key={Date.now()} className='Subtitle'>{transcript}</div>
+      <div key={Date.now() + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} className='Subtitle'>{transcript}</div>
     ));
 
     return (
@@ -66,8 +63,7 @@ export default class Video extends Component {
         </div>
         {/* Absolute positioned controls (mute mic, mute video, end call) */}
         <div className='Controls'>
-          <div onClick={this.toggleMic}>{this.state.mic ? <FaMicrophoneSlash /> : <FaMicrophone />}</div>
-          <div onClick={this.toggleCamera}>{this.state.camera ? <FaVideoSlash /> : <FaVideo />}</div>
+          <div onMouseDown={this.record} className={['Mic', this.state.recording ? 'Recording' : null].join(' ')} onMouseUp={this.stopRecording}><FaMicrophone /></div>
           <div onClick={this.hangup} className='Hangup'><FaPhone /></div>
         </div>
       </div >
@@ -75,16 +71,17 @@ export default class Video extends Component {
   }
 
   // Toggle muting mic
-  toggleMic = () => {
+  record = () => {
+    this.recognition.start();
     this.setState({
-      mic: !this.state.mic
+      recording: true
     });
   }
 
-  // Toggle muting camera
-  toggleCamera = () => {
+  stopRecording = () => {
+    this.recognition.stop();
     this.setState({
-      camera: !this.state.camera
+      recording: false
     });
   }
 
@@ -93,6 +90,9 @@ export default class Video extends Component {
   }
 
   onHangup = () => {
+    if (!this.peer) {
+      return;
+    }
     this.peer.destroy();
     this.peer = null;
     this.video.srcObject.getTracks().forEach(track => {
@@ -104,6 +104,7 @@ export default class Video extends Component {
   }
 
   receivedTranslation = (transcript) => {
+    console.log('RECEIVED TRANSCRIPT:', transcript);
     this.setState({
       leftSubtitles: this.state.leftSubtitles.concat(transcript)
     });
@@ -133,17 +134,9 @@ export default class Video extends Component {
   // Send offer to the peer to peer using sockets
   onAnsweredCall = (call) => {
 
-    try {
-      this.recognition.start();
-    }
-    catch (err) {
-      console.log(err);
-    }
-
-
     if (this.socket.id !== call.to) {
 
-      navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
+      navigator.mediaDevices.getUserMedia({ audio: false, video: true }).then(localStream => {
         this.localVideo.srcObject = localStream;
 
         this.peer = new Peer({
@@ -156,6 +149,7 @@ export default class Video extends Component {
         });
 
         this.peer.on('stream', remoteStream => {
+          console.log(remoteStream);
           this.video.srcObject = remoteStream;
         });
       });
@@ -165,7 +159,7 @@ export default class Video extends Component {
   onOffer = (data) => {
 
     if (!this.peer) {
-      navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
+      navigator.mediaDevices.getUserMedia({ audio: false, video: true }).then(localStream => {
 
         this.localVideo.srcObject = localStream;
         this.peer = new Peer({

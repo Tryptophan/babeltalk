@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { FaPhone } from 'react-icons/fa';
 import './Users.css';
 
 export default class Users extends Component {
@@ -49,7 +50,7 @@ export default class Users extends Component {
     // TODO: Render an end call button instead of call if
 
     let socket = this.props.socket;
-  
+
     let users = this.state.users.map(user => (
       <User username={user.username} key={user.id} id={user.id} parentUser={this.socket.id} socket={socket} />
     ));
@@ -73,6 +74,7 @@ class User extends Component {
 
     this.socket = this.props.socket;
     this.socket.on('hangup', this.onHangup);
+    this.socket.on('answeredCall', this.onAnsweredCall);
   }
 
   render() {
@@ -80,8 +82,10 @@ class User extends Component {
     // TODO: Render a call button and the user's name (this.props.username)
     let username = this.props.username;
     return (
-      <div>
-        <button onClick={this.call}>{this.state.callState ? 'Hangup' : 'Call'}</button>
+      <div className='User'>
+        <div onClick={this.call}>
+          {this.state.callState ? <FaPhone className='HangupUser' /> : <FaPhone className='CallUser' />}
+        </div>
         <p>{username}</p>
       </div>
     );
@@ -106,5 +110,15 @@ class User extends Component {
     this.setState({
       callState: false
     });
+  }
+
+  onAnsweredCall = (call) => {
+    console.log('answered call', call);
+    console.log('id', this.props.id);
+    if (this.props.id === call.to || this.props.id === call.from) {
+      this.setState({
+        callState: true
+      });
+    }
   }
 }
