@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { FaPhone } from 'react-icons/fa';
 import './Call.css';
 
 export default class Call extends Component {
@@ -8,7 +9,7 @@ export default class Call extends Component {
 
     this.socket = this.props.socket;
     this.socket.on('call', this.show);
-    
+
     this.state = {
       user: null,
       call: null
@@ -26,12 +27,10 @@ export default class Call extends Component {
       return (
         <div className='Call'>
           {this.state.call.from} is calling you...<br />
-          <button onClick={this.answerCall}>Answer</button>
-          <button onClick={this.declineCall}>Decline</button>
-          <button onClick={this.playAudio} id="pling" ref={el=>{this.audio = el}} src="http://soundbible.com/mp3/Pling-KevanGC-1485374730.mp3">audio test</button>
-            {/* id="pling" ref={el => { this.audio = el }}
-            src="http://soundbible.com/mp3/Pling-KevanGC-1485374730.mp3">
-          </audio> */}
+          <div>
+            <FaPhone onClick={this.answerCall} className='CallUser' />
+            <FaPhone onClick={this.declineCall} className='HangupUser' />
+          </div>
         </div>
       );
     } else {
@@ -41,9 +40,9 @@ export default class Call extends Component {
 
 
   playAudio = (audio) => {
-      console.log("poo playing audio");
-      let sound = new Audio("http://soundbible.com/mp3/Pling-KevanGC-1485374730.mp3")
-      sound.play();
+    console.log("poo playing audio");
+    let sound = new Audio("http://soundbible.com/mp3/Pling-KevanGC-1485374730.mp3")
+    sound.play();
   }
 
   show = (call) => {

@@ -27,7 +27,7 @@ export default class Chat extends Component {
       <div className='Chat'>
         <Scrollbars className='Messages' ref={el => { this.scroll = el }}><div>{chats}</div></Scrollbars>
         <div className='ChatControls'>
-          <input ref={el => { this.input = el }} onKeyPress={this.onKeyPress} type='text' placeholder='Type here!' type='text' />
+          <input ref={el => { this.input = el }} onKeyPress={this.onKeyPress} type='text' placeholder='Type here!' />
           <button onClick={this.sendClicked}>Send</button>
         </div>
       </div>
