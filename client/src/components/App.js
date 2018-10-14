@@ -39,7 +39,7 @@ class App extends Component {
         <Call socket={this.socket} />
         <Users socket={this.socket} />
         <div className='VideoChat'>
-          <Video socket={this.socket} />
+          <Video lang={this.state.lang} socket={this.socket} />
           <Chat lang={this.state.lang} socket={this.socket} />
         </div>
       </div>

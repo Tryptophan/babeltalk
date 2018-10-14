@@ -31,6 +31,9 @@ export default class Video extends Component {
     this.recognition = new window.webkitSpeechRecognition();
     this.recognition.interimResults = true;
     this.recognition.onresult = this.onTranscript;
+    
+    // Synthesis
+    this.synth = window.speechSynthesis;
 
     this.socket.on('transcript', this.receivedTranslation);
   }
@@ -108,6 +111,9 @@ export default class Video extends Component {
     this.setState({
       leftSubtitles: this.state.leftSubtitles.concat(transcript)
     });
+    let utterance = new SpeechSynthesisUtterance(transcript);
+    utterance.lang = this.props.lang;
+    this.synth.speak(utterance);
   }
 
   onTranscript = (event) => {
