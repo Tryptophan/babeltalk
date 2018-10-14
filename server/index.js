@@ -1,5 +1,5 @@
 const io = require('socket.io')();
-const {translate} = require('./translate');
+const { translate } = require('./translate');
 require('dotenv').config();
 
 // Array of clients to hold state
@@ -36,9 +36,13 @@ io.on('connection', (client) => {
       console.log("server");
       console.log(user.lang);
     });
-
-
   });
+
+  client.on('transcript', chat => {
+
+
+  })
+
   // Send chat message
   client.on('chat', chat => {
     chat.key = Date.now();
@@ -79,8 +83,8 @@ io.on('connection', (client) => {
         }
       });
     }
-    else{
-    //Send the chat to everyone in the room
+    else {
+      //Send the chat to everyone in the room
       for (let room in client.rooms) {
         if (room !== client.id) {
           io.to(receiver).emit('chat', chat);
