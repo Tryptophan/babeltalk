@@ -10,7 +10,7 @@ export default class Chat extends Component {
       chats: [],
       lang: 'en'
     };
-  
+
     this.socket = this.props.socket;
     this.socket.on('chat', this.receivedChat);
   }
@@ -18,21 +18,18 @@ export default class Chat extends Component {
   componentDidMount() {
     let localLang = navigator.language;
     langs.forEach(lang => {
-      for (let i = 0; i < localLang.length; i++) {
-        if (lang.code === localLang[i]) {
-          this.setState({
-            lang: localLang[i]
-          });
-        }
+      if (lang.code === localLang) {
+        this.setState({
+          lang: localLang
+        });
       }
-
     });
   }
   render() {
 
     // TODO: Render scrolling chat log of previous messages
     // TODO: Enter chats into input tag and send by hitting enter or clicking send
-   
+
     let chats = this.state.chats.map(chat => (
       <li key={chat.key}>{chat.message}</li>
     ));
@@ -93,7 +90,6 @@ export default class Chat extends Component {
     });
     // this.socket.emit(tell the server that language has changed)
     this.socket.emit('lang', { lang: event.target.value });
-
   }
 }
 

@@ -34,6 +34,8 @@ export default class Video extends Component {
     this.recognition.lang = 'en';
     this.recognition.interimResults = true;
     this.recognition.onresult = this.onTranscript;
+
+    this.socket.on('transcript', this.receivedTranslation);
   }
 
   render() {
@@ -101,8 +103,10 @@ export default class Video extends Component {
     });
   }
 
-  receivedTranslation = () => {
-
+  receivedTranslation = (transcript) => {
+    this.setState({
+      leftSubtitles: this.state.leftSubtitles.concat(transcript)
+    });
   }
 
   onTranscript = (event) => {
@@ -111,14 +115,16 @@ export default class Video extends Component {
       interimTranscript: ''
     })
     for (let i = event.resultIndex; i < results.length; ++i) {
+      let transcript = results[i][0].transcript;
       if (results[i].isFinal) {
+        this.socket.emit('transcript', transcript);
         this.setState({
           interimTranscript: '',
-          rightSubtitles: this.state.rightSubtitles.concat(results[i][0].transcript)
+          rightSubtitles: this.state.rightSubtitles.concat(transcript)
         });
       } else {
         this.setState({
-          interimTranscript: this.state.interimTranscript + results[i][0].transcript + ' '
+          interimTranscript: this.state.interimTranscript + transcript + ' '
         });
       }
     }
