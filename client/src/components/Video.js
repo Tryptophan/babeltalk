@@ -111,6 +111,21 @@ export default class Video extends Component {
     this.setState({
       leftSubtitles: this.state.leftSubtitles.concat(transcript)
     });
+
+    setTimeout(() => {
+      console.log('timeout');
+      let transcripts = this.state.leftSubtitles;
+      for (let i = 0; i < transcripts.length; i++) {
+        if (transcripts[i] === transcript) {
+          transcripts.splice(i, 1);
+        }
+      }
+
+      this.setState({
+        leftSubtitles: transcripts
+      });
+    }, 5000);
+
     let utterance = new SpeechSynthesisUtterance(transcript);
     utterance.lang = this.props.lang;
     this.synth.speak(utterance);
@@ -129,6 +144,20 @@ export default class Video extends Component {
           interimTranscript: '',
           rightSubtitles: this.state.rightSubtitles.concat(transcript)
         });
+
+        setTimeout(() => {
+          console.log('timeout');
+          let transcripts = this.state.rightSubtitles;
+          for (let i = 0; i < transcripts.length; i++) {
+            if (transcripts[i] === transcript) {
+              transcripts.splice(i, 1);
+            }
+          }
+    
+          this.setState({
+            rightSubtitles: transcripts
+          });
+        }, 5000);
       } else {
         this.setState({
           interimTranscript: this.state.interimTranscript + transcript + ' '
