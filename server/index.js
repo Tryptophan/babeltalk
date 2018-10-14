@@ -47,11 +47,20 @@ io.on('connection', (client) => {
     io.to(call.to).emit("call", call);
   });
 
-  // client.on('hangup', call => {
-  //   io.sockets.clients(call.to + call.from).forEach(function (socketClient) {
-  //     socketClient.leave(call.to + call.from);
-  //   });
-  // });
+  // Leave call
+  client.on('hangup', () => {
+    for (let room in client.rooms) {
+      if (room && client.id !== room) {
+        console.log(room);
+        io.of('/').in(room).clients((err, clients) => {
+          if (err) throw err;
+          clients.forEach(id => {
+            io.sockets.sockets[id].leave(room);
+          });
+        });
+      }
+    }
+  });
 
   client.on('answeredCall', call => {
     client.join(call.to + call.from);

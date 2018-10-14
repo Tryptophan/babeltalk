@@ -33,7 +33,7 @@ export default class Video extends Component {
         <div className='Controls'>
           <div onClick={this.toggleMic}>{this.state.mic ? <FaMicrophoneSlash /> : <FaMicrophone />}</div>
           <div onClick={this.toggleCamera}>{this.state.camera ? <FaVideoSlash /> : <FaVideo />}</div>
-          <div className='Hangup'><FaPhone /></div>
+          <div onClick={this.hangup} className='Hangup'><FaPhone /></div>
         </div>
       </div >
     );
@@ -53,8 +53,8 @@ export default class Video extends Component {
     });
   }
 
-  endCall = () => {
-
+  hangup = () => {
+    this.socket.emit('hangup');
   }
 
   receivedTranslation = () => {
@@ -69,7 +69,6 @@ export default class Video extends Component {
   onAnsweredCall = (call) => {
 
     navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
-      console.log('test')
       this.localVideo.srcObject = localStream;
 
       this.peer = new Peer({
