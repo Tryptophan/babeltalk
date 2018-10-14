@@ -109,6 +109,7 @@ export default class Video extends Component {
   }
 
   receivedTranslation = (transcript) => {
+    console.log('RECEIVED TRANSCRIPT:', transcript);
     this.setState({
       leftSubtitles: this.state.leftSubtitles.concat(transcript)
     });

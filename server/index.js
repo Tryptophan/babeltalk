@@ -67,6 +67,7 @@ io.on('connection', (client) => {
         for (let room in client.rooms) {
           if (room !== client.id) {
             io.to(receiver).emit('transcript', transcipt);
+            console.log('EMIT EVENT FIRED FOR TRANSCRIPT');
           }
         }
       });
