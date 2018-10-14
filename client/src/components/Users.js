@@ -40,6 +40,7 @@ export default class Users extends Component {
     });
   }
 
+
   render() {
 
     // TODO: Render users by mapping each user to a list item <li> in an unordered list <ul> of users
@@ -48,8 +49,9 @@ export default class Users extends Component {
     // TODO: Render an end call button instead of call if
 
     let socket = this.props.socket;
+  
     let users = this.state.users.map(user => (
-      <User username={user.username} key={user.id} id={user.id} parentUser={this.socket.id} socket={socket}></User>
+      <User username={user.username} key={user.id} id={user.id} parentUser={this.socket.id} socket={socket} />
     ));
 
     return (
@@ -70,6 +72,7 @@ class User extends Component {
     };
 
     this.socket = this.props.socket;
+    this.socket.on('hangup', this.onHangup);
   }
 
   render() {
@@ -97,5 +100,11 @@ class User extends Component {
     this.setState(state => ({
       callState: !state.callState
     }));
+  }
+
+  onHangup = () => {
+    this.setState({
+      callState: false
+    });
   }
 }
