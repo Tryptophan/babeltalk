@@ -144,7 +144,7 @@ export default class Video extends Component {
 
     if (this.socket.id !== call.to) {
 
-      navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
+      navigator.mediaDevices.getUserMedia({ audio: false, video: true }).then(localStream => {
         this.localVideo.srcObject = localStream;
 
         this.peer = new Peer({
@@ -166,7 +166,7 @@ export default class Video extends Component {
   onOffer = (data) => {
 
     if (!this.peer) {
-      navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
+      navigator.mediaDevices.getUserMedia({ audio: false, video: true }).then(localStream => {
 
         this.localVideo.srcObject = localStream;
         this.peer = new Peer({

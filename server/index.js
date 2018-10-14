@@ -1,4 +1,4 @@
-const io = require('socket.io')();
+const io = require('socket.io')({ origins: 'http://localhost:*' });
 const { translate } = require('./translate');
 require('dotenv').config();
 
