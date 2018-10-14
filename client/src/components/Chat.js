@@ -25,6 +25,7 @@ export default class Chat extends Component {
       }
     });
   }
+
   render() {
 
     // TODO: Render scrolling chat log of previous messages

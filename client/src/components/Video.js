@@ -133,30 +133,38 @@ export default class Video extends Component {
   // Send offer to the peer to peer using sockets
   onAnsweredCall = (call) => {
 
-    this.recognition.start();
+    try {
+      this.recognition.start();
+    }
+    catch (err) {
+      console.log(err);
+    }
 
-    navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
-      this.localVideo.srcObject = localStream;
 
-      this.peer = new Peer({
-        initiator: true,
-        stream: localStream
+    if (this.socket.id !== call.to) {
+
+      navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
+        this.localVideo.srcObject = localStream;
+
+        this.peer = new Peer({
+          initiator: true,
+          stream: localStream
+        });
+
+        this.peer.on('signal', offer => {
+          this.socket.emit('offer', { offer: offer, ...call });
+        });
+
+        this.peer.on('stream', remoteStream => {
+          this.video.srcObject = remoteStream;
+        });
       });
-
-      this.peer.on('signal', offer => {
-        this.socket.emit('offer', { offer: offer, ...call });
-      });
-
-      this.peer.on('stream', remoteStream => {
-        this.video.srcObject = remoteStream;
-      });
-    });
+    }
   }
 
   onOffer = (data) => {
 
     if (!this.peer) {
-      this.recognition.start();
       navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
 
         this.localVideo.srcObject = localStream;
