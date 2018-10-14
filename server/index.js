@@ -1,5 +1,5 @@
 const io = require('socket.io')();
-const {translate} = require('./translate');
+const { translate } = require('./translate');
 require('dotenv').config();
 
 // Array of clients to hold state
@@ -36,9 +36,52 @@ io.on('connection', (client) => {
       console.log("server");
       console.log(user.lang);
     });
+  });
 
+  client.on('transcript', chat => {
+    console.log("server transcript");
+
+    let senderLang = null;
+    let receiverLang = null;
+    let receiver = null;
+
+    for (let room in client.rooms) {
+      if (room !== client.id) {
+        receiver = room.replace(client.id, "");
+      }
+    }
+
+    users.forEach(user => { // finding sender's language
+      if (client.id === user.id) {
+        senderLang = user.lang;
+      }
+      else if (receiver === user.id) {
+        receiverLang = user.lang;
+      }
+    });
+
+    if (receiverLang !== senderLang) {
+      translate(chat.message, receiverLang, senderLang, (translation) => {
+        chat.message = translation[0].translatedText;
+        console.log(chat.message);
+        for (let room in client.rooms) {
+          if (room !== client.id) {
+            io.to(receiver).emit('transcript', chat);
+          }
+        }
+      });
+    }
+    else {
+      //Send the chat to the receiver in the room
+      for (let room in client.rooms) {
+        if (room !== client.id) {
+          io.to(receiver).emit('transcript', chat);
+        }
+      }
+    }
 
   });
+
   // Send chat message
   client.on('chat', chat => {
     chat.key = Date.now();
@@ -79,8 +122,8 @@ io.on('connection', (client) => {
         }
       });
     }
-    else{
-    //Send the chat to everyone in the room
+    else {
+      //Send the chat to everyone in the room
       for (let room in client.rooms) {
         if (room !== client.id) {
           io.to(receiver).emit('chat', chat);
