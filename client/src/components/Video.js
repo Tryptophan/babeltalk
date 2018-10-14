@@ -45,12 +45,14 @@ export default class Video extends Component {
 
   render() {
 
+
+
     let leftSubtitles = this.state.leftSubtitles.map(transcript => (
-      <div key={Date.now()} className='Subtitle'>{transcript}</div>
+      <div key={Date.now() + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} className='Subtitle'>{transcript}</div>
     ));
 
     let rightSubtitles = this.state.rightSubtitles.map(transcript => (
-      <div key={Date.now()} className='Subtitle'>{transcript}</div>
+      <div key={Date.now() + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)} className='Subtitle'>{transcript}</div>
     ));
 
     return (
@@ -139,13 +141,7 @@ export default class Video extends Component {
   // Send offer to the peer to peer using sockets
   onAnsweredCall = (call) => {
 
-    try {
-      this.recognition.start();
-    }
-    catch (err) {
-      console.log(err);
-    }
-
+    this.recognition.start();
 
     if (this.socket.id !== call.to) {
 
