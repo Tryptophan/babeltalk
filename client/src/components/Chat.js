@@ -51,6 +51,9 @@ export default class Chat extends Component {
   receivedChat = (chat) => {
     console.log(chat);
     console.log("recieved a chat");
+    let date = new Date(chat.key);
+    console.log(date);
+    chat.message = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + " - " + chat.message;
     this.setState({
       chats: this.state.chats.concat(chat)
     });
