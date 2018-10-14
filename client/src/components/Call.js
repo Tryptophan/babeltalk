@@ -26,7 +26,7 @@ export default class Call extends Component {
     if (this.state.call) {
       return (
         <div className='Call'>
-          {this.state.call.from} is calling you...<br />
+          {this.state.call.fromUsername} is calling you...<br />
           <div>
             <FaPhone onClick={this.answerCall} className='CallUser' />
             <FaPhone onClick={this.declineCall} className='HangupUser' />

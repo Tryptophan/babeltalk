@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import bg from '../bg.jpg';
 
 import langs from '../languages';
 
@@ -93,17 +92,6 @@ class App extends Component {
     });
     // this.socket.emit(tell the server that language has changed)
     this.socket.emit('lang', { lang: event.target.value });
-  }
-
-  componentDidMount() {
-    let localLang = navigator.language;
-    langs.forEach(lang => {
-      if (lang.code === localLang) {
-        this.setState({
-          lang: localLang
-        });
-      }
-    });
   }
 }
 

@@ -52,7 +52,7 @@ export default class Users extends Component {
     let socket = this.props.socket;
 
     let users = this.state.users.map(user => (
-      <User username={user.username} key={user.id} id={user.id} parentUser={this.socket.id} socket={socket} />
+      <User username={user.username} key={user.id} id={user.id} parentUser={this.socket.id} parentUsername={this.props.username} socket={socket} />
     ));
 
     return (
@@ -76,6 +76,7 @@ class User extends Component {
     this.socket = this.props.socket;
     this.socket.on('hangup', this.onHangup);
     this.socket.on('answeredCall', this.onAnsweredCall);
+    this.socket.on('declinedCall', this.onDeclinedCall);
   }
 
   render() {
@@ -99,7 +100,7 @@ class User extends Component {
     }
     else { // if no connection is open
       console.log("calling another user pt 1");
-      this.socket.emit('call', { to: this.props.id, from: this.props.parentUser }); // handled on server
+      this.socket.emit('call', { to: this.props.id, from: this.props.parentUser, fromUsername: this.props.parentUsername }); // handled on server
     }
 
     this.setState(state => ({
@@ -119,6 +120,14 @@ class User extends Component {
     if (this.props.id === call.to || this.props.id === call.from) {
       this.setState({
         callState: true
+      });
+    }
+  }
+
+  onDeclinedCall = (call) => {
+    if (this.props.id === call.to || this.props.id === call.from) {
+      this.setState({
+        callState: false
       });
     }
   }
