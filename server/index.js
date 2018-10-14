@@ -1,4 +1,4 @@
-const io = require('socket.io')();
+const io = require('socket.io')({ origins: 'http://localhost:*' });
 const { translate } = require('./translate');
 require('dotenv').config();
 
@@ -67,6 +67,7 @@ io.on('connection', (client) => {
         for (let room in client.rooms) {
           if (room !== client.id) {
             io.to(receiver).emit('transcript', transcipt);
+            console.log('EMIT EVENT FIRED FOR TRANSCRIPT');
           }
         }
       });
@@ -146,7 +147,7 @@ io.on('connection', (client) => {
   // Leave call
   client.on('hangup', () => {
     for (let room in client.rooms) {
-      if (room && client.id !== room) {
+      if (client.id !== room) {
         console.log(room);
         io.to(room).emit('hangup');
         io.of('/').in(room).clients((err, clients) => {
@@ -162,6 +163,7 @@ io.on('connection', (client) => {
 
   client.on('answeredCall', call => {
     client.join(call.to + call.from);
+    io.to(call.to).emit('answeredCall', call);
     io.to(call.from).emit('answeredCall', call);
   });
 

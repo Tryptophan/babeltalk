@@ -84,6 +84,27 @@ class App extends Component {
     // this.socket.emit(tell the server that language has changed)
     this.socket.emit('lang', { lang: event.target.value });
   }
+
+  componentDidMount() {
+    let localLang = navigator.language;
+    langs.forEach(lang => {
+      if (lang.code === localLang) {
+        this.setState({
+          lang: localLang
+        });
+      }
+    });
+  }
+
+  handleChange = (event) => {
+    console.log("lang change event");
+    console.log(event.target.value);
+    this.setState({
+      lang: event.target.value
+    });
+    // this.socket.emit(tell the server that language has changed)
+    this.socket.emit('lang', { lang: event.target.value });
+  }
 }
 
 export default App;
