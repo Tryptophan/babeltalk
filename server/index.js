@@ -52,6 +52,7 @@ io.on('connection', (client) => {
     for (let room in client.rooms) {
       if (room && client.id !== room) {
         console.log(room);
+        io.to(room).emit('hangup');
         io.of('/').in(room).clients((err, clients) => {
           if (err) throw err;
           clients.forEach(id => {

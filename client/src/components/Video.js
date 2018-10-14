@@ -18,6 +18,9 @@ export default class Video extends Component {
     // Call we started was answered
     this.socket.on('answeredCall', this.onAnsweredCall);
 
+    // Call was ended
+    this.socket.on('hangup', this.onHangup);
+
     // WebRTC
     this.socket.on('offer', this.onOffer);
     this.socket.on('answer', this.onAnswer);
@@ -55,6 +58,17 @@ export default class Video extends Component {
 
   hangup = () => {
     this.socket.emit('hangup');
+  }
+
+  onHangup = () => {
+    this.peer.destroy();
+    this.peer = null;
+    this.video.srcObject.getTracks().forEach(track => {
+      track.stop();
+    });
+    this.localVideo.srcObject.getTracks().forEach(track => {
+      track.stop();
+    });
   }
 
   receivedTranslation = () => {
