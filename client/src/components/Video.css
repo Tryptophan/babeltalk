@@ -20,21 +20,30 @@
   bottom: 30px;
   display: flex;
   justify-content: space-between;
-  width: 30%;
+  width: 15%;
+}
+
+.Video .Controls .Mic {
+  color: black;
+  background-color: white;
+}
+
+.Video .Controls .Recording {
+  color: red;
 }
 
 .Video .Controls div {
   color: white;
   background-color: red;
-  height: 40px;
+  height: 20px;
   display: inline-block;
   padding: 20px;
   border-radius: 100%;
 }
 
 .Video .Controls div svg {
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
 }
 
 .Video video {
