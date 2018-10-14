@@ -34,7 +34,7 @@ export default class Video extends Component {
     this.recognition.interimResults = true;
     this.recognition.onresult = this.onTranscript;
 
-    this.recognition.onend = () => {
+    this.recognition.onspeechend = () => {
       console.log('speech recognition ended');
       this.recognition.start();
     }
