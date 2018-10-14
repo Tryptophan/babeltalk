@@ -1,4 +1,6 @@
 const io = require('socket.io')();
+const {translate} = require('./translate');
+require('dotenv').config();
 
 // Array of clients to hold state
 let users = [];
@@ -25,15 +27,64 @@ io.on('connection', (client) => {
     }
   });
 
+  client.on('lang', lang => {
+    console.log(lang.lang);
+    users.forEach(user => {
+      if (client.id === user.id) {
+        user.lang = lang.lang;
+      }
+      console.log("server");
+      console.log(user.lang);
+    });
+
+
+  });
   // Send chat message
   client.on('chat', chat => {
     chat.key = Date.now();
     console.log("server chat");
-    console.log(chat);
-    console.log(client.rooms[0]);
+    // know the OTHER PERSON'S lang
+    // loop through users array, find the user, get their language preference, call translation
+
+    let senderLang = null;
+    let receiverLang = null;
+    let receiver = null;
+
     for (let room in client.rooms) {
       if (room !== client.id) {
-        io.to(room).emit('chat', chat);
+        receiver = room.replace(client.id, "");
+      }
+    }
+    console.log(receiver);
+
+    users.forEach(user => { // finding sender's language
+      if (client.id === user.id) {
+        senderLang = user.lang;
+      }
+      else if (receiver === user.id) {
+        receiverLang = user.lang;
+      }
+    });
+    console.log(senderLang);
+    console.log(receiverLang);
+    io.to(client.id).emit('chat', chat);
+    if (receiverLang !== senderLang) {
+      translate(chat.message, receiverLang, senderLang, (translation) => {
+        chat.message = translation[0].translatedText;
+        console.log(chat.message);
+        for (let room in client.rooms) {
+          if (room !== client.id) {
+            io.to(receiver).emit('chat', chat);
+          }
+        }
+      });
+    }
+    else{
+    //Send the chat to everyone in the room
+      for (let room in client.rooms) {
+        if (room !== client.id) {
+          io.to(receiver).emit('chat', chat);
+        }
       }
     }
   });
@@ -62,6 +113,7 @@ io.on('connection', (client) => {
       }
     }
   });
+
 
   client.on('answeredCall', call => {
     client.join(call.to + call.from);

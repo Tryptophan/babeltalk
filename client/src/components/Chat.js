@@ -5,7 +5,8 @@ export default class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chats: []
+      chats: [],
+      lang: 'en'
     };
     this.socket = this.props.socket;
     this.socket.on('chat', this.receivedChat);
@@ -25,6 +26,10 @@ export default class Chat extends Component {
         <ul>{chats}</ul>
         <input ref={el => { this.input = el }} onKeyPress={this.onKeyPress} type='text' placeholder='Type here!' id='insertBox' />
         <button id='sendBtn' onClick={this.sendClicked}>Send</button>
+        <select onChange={this.handleChange}>
+          <option value="en">en</option> 
+          <option value="es">es</option>
+        </select>
       </div>
     );
   }
@@ -52,7 +57,20 @@ export default class Chat extends Component {
   }
 
   sendChat = (text) => {
-    this.socket.emit('chat', { message: text });
+    this.socket.emit('chat', { message: text, lang: this.state.lang });
     this.input.value = null;
   }
+
+  handleChange = (event) =>{
+    console.log("lang change event");
+    console.log(event.target.value);
+    this.setState({
+      lang: event.target.value
+    });
+    // this.socket.emit(tell the server that language has changed)
+    this.socket.emit('lang', {lang: event.target.value});
+
+  }
 }
+
+
