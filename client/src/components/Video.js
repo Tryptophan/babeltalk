@@ -9,7 +9,7 @@ export default class Video extends Component {
     super(props);
 
     this.state = {
-      recording: true,
+      recording: false,
       leftSubtitles: [],
       rightSubtitles: [],
       interimTranscript: ''
@@ -63,7 +63,7 @@ export default class Video extends Component {
         </div>
         {/* Absolute positioned controls (mute mic, mute video, end call) */}
         <div className='Controls'>
-          <div onMouseDown={this.record} onMouseUp={this.stopRecording}><FaMicrophone /></div>
+          <div onMouseDown={this.record} className={['Mic', this.state.recording ? 'Recording' : null].join(' ')} onMouseUp={this.stopRecording}><FaMicrophone /></div>
           <div onClick={this.hangup} className='Hangup'><FaPhone /></div>
         </div>
       </div >
