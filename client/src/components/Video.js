@@ -31,7 +31,6 @@ export default class Video extends Component {
     // Speech
     this.recognition = new window.webkitSpeechRecognition();
     this.recognition.continuous = true;
-    this.recognition.lang = 'en';
     this.recognition.interimResults = true;
     this.recognition.onresult = this.onTranscript;
 
