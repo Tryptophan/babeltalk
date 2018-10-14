@@ -57,6 +57,7 @@ export default class Users extends Component {
 
     return (
       <div className='Users'>
+        <span>Welcome, {this.props.username}!</span>
         {users}
       </div>
     );

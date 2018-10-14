@@ -3,6 +3,13 @@
   height: 100vh;
 }
 
+.Users span {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 .User {
   display: flex;
   align-items: center;

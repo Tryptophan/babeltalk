@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
+import bg from '../bg.jpg';
 
 import langs from '../languages';
 
@@ -11,7 +12,6 @@ import Call from './Call';
 
 // CSS Import
 import './App.css';
-import { Splashscreen } from './Splashscreen';
 
 class App extends Component {
 
@@ -20,14 +20,10 @@ class App extends Component {
 
     this.state = {
       lang: 'en',
-      username: ''
+      username: null
     };
 
-
     this.socket = io(process.env.REACT_APP_SOCKET_SERVER);
-    this.socket.on('connect', () => {
-      this.socket.emit('join', { id: this.socket.id, username: this.socket.id, lang: 'en' });
-    });
   }
 
   render() {
@@ -35,15 +31,20 @@ class App extends Component {
       <option value={lang.code} key={lang.code}>{lang.name}</option>
     ));
 
-    if (!this.Splashscreen || !this.Splashscreen.state.userName) { // checks if there is no username
-      // render splashscreen if no username
-
+    if (!this.state.username) {
       console.log('rendering screen');
-      return (<div className='App'>
-
-        <Splashscreen ref={el => { this.Splashscreen = el }}></Splashscreen>
-
-      </div>);
+      return (
+        <div className='App'>
+          <select value={this.state.lang} onChange={this.handleChange}>
+            {langList}
+          </select>
+          <div className='Splash'>
+            <div className='Title'>BABEL TALK</div>
+            <div className='Subtitle'>The real-time video calling voice-to-voice translation app!</div>
+            <input type='text' onKeyPress={this.onKeyPress} ref={el => { this.input = el }} placeholder="What's your name?" />
+          </div>
+        </div>
+      );
     }
     else {
       return (
@@ -52,7 +53,7 @@ class App extends Component {
             {langList}
           </select>
           <Call socket={this.socket} />
-          <Users socket={this.socket} />
+          <Users username={this.state.username} socket={this.socket} />
           <div className='VideoChat'>
             <Video lang={this.state.lang} socket={this.socket} />
             <Chat lang={this.state.lang} socket={this.socket} />
@@ -62,27 +63,15 @@ class App extends Component {
     }
   }
 
-  componentDidMount() {
-    let localLang = navigator.language;
-    langs.forEach(lang => {
-      if (lang.code === localLang) {
-        this.setState({
-          lang: localLang
-        });
-      }
-    });
-  }
-
-  
-
-  handleChange = (event) => {
-    console.log("lang change event");
-    console.log(event.target.value);
-    this.setState({
-      lang: event.target.value
-    });
-    // this.socket.emit(tell the server that language has changed)
-    this.socket.emit('lang', { lang: event.target.value });
+  onKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      let text = this.input.value;
+      this.setState({
+        username: text
+      });
+      this.input.value = null;
+      this.socket.emit('join', { id: this.socket.id, username: text, lang: this.state.lang });
+    }
   }
 
   componentDidMount() {
@@ -104,6 +93,17 @@ class App extends Component {
     });
     // this.socket.emit(tell the server that language has changed)
     this.socket.emit('lang', { lang: event.target.value });
+  }
+
+  componentDidMount() {
+    let localLang = navigator.language;
+    langs.forEach(lang => {
+      if (lang.code === localLang) {
+        this.setState({
+          lang: localLang
+        });
+      }
+    });
   }
 }
 
