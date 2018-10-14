@@ -33,7 +33,7 @@ export default class Chat extends Component {
     // TODO: Enter chats into input tag and send by hitting enter or clicking send
 
     let chats = this.state.chats.map(chat => (
-      <p key={chat.key}>{chat.message}</p>
+      <p key={chat.key}><span className='ChatDate'>{chat.date}</span> {chat.message}</p>
     ));
 
     let langList = langs.map(lang => (
@@ -77,7 +77,7 @@ export default class Chat extends Component {
     console.log("recieved a chat");
     let date = new Date(chat.key);
     console.log(date);
-    chat.message = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + " - " + chat.message;
+    chat.date = date.getHours() + ":" + date.getMinutes();
     this.setState({
       chats: this.state.chats.concat(chat)
     });
