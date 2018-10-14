@@ -15,7 +15,7 @@ class App extends Component {
   constructor() {
     super();
 
-    this.socket = io('http://localhost:3001');
+    this.socket = io(process.env.REACT_APP_SOCKET_SERVER);
     this.socket.on('connect', () => {                                           // change later to support different defaults
       this.socket.emit('join', { id: this.socket.id, username: this.socket.id, lang: 'en' });
     });
