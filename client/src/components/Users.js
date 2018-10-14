@@ -73,6 +73,7 @@ class User extends Component {
 
     this.socket = this.props.socket;
     this.socket.on('hangup', this.onHangup);
+    this.socket.on('answeredCall', this.onAnsweredCall);
   }
 
   render() {
@@ -106,5 +107,15 @@ class User extends Component {
     this.setState({
       callState: false
     });
+  }
+
+  onAnsweredCall = (call) => {
+    console.log('answered call', call);
+    console.log('id', this.props.id);
+    if (this.props.id === call.to || this.props.id === call.from) {
+      this.setState({
+        callState: true
+      });
+    }
   }
 }
