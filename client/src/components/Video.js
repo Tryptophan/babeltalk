@@ -90,6 +90,9 @@ export default class Video extends Component {
   }
 
   onHangup = () => {
+    if (!this.peer) {
+      return;
+    }
     this.peer.destroy();
     this.peer = null;
     this.video.srcObject.getTracks().forEach(track => {
