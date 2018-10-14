@@ -1,9 +1,26 @@
 .Chat {
   width: 100%;
-  
   height: 30vh;
+  display: flex;
+  flex-direction: column;
 }
-li span {
-  color: black;
-  bottom: 0;
+
+.ChatControls {
+  margin-bottom: 10px;
+}
+
+.Chat input {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #CCC;
+  margin-right: 10px;
+  flex-grow: 1;
+}
+
+.Chat button {
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  background-color: gray;
+  border: none;
 }

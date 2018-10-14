@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Chat.css';
 import langs from '../languages';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export default class Chat extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ export default class Chat extends Component {
     // TODO: Enter chats into input tag and send by hitting enter or clicking send
 
     let chats = this.state.chats.map(chat => (
-      <li key={chat.key}>{chat.message}</li>
+      <p key={chat.key}>{chat.message}</p>
     ));
 
     let langList = langs.map(lang => (
@@ -41,16 +42,21 @@ export default class Chat extends Component {
 
     return (
       <div className='Chat'>
-        <ul>{chats}</ul>
-        <input ref={el => { this.input = el }} onKeyPress={this.onKeyPress} type='text' placeholder='Type here!' id='insertBox' />
-        <button id='sendBtn' onClick={this.sendClicked}>Send</button>
+        <Scrollbars className='Messages' ref={el => { this.scroll = el }}><div>{chats}</div></Scrollbars>
+        <div className='ChatControls'>
+          <input ref={el => { this.input = el }} onKeyPress={this.onKeyPress} type='text' placeholder='Type here!' type='text' />
+          <button onClick={this.sendClicked}>Send</button>
 
-        <select value={this.state.lang} onChange={this.handleChange}>
-          {langList}
-        </select>
-
+          <select value={this.state.lang} onChange={this.handleChange}>
+            {langList}
+          </select>
+        </div>
       </div>
     );
+  }
+
+  componentDidUpdate() {
+    this.scroll.scrollToBottom();
   }
 
   onKeyPress = (event) => {
@@ -65,7 +71,6 @@ export default class Chat extends Component {
   sendClicked = () => {
     this.sendChat(this.input.value);
   }
-
 
   receivedChat = (chat) => {
     console.log(chat);
@@ -93,5 +98,3 @@ export default class Chat extends Component {
     this.socket.emit('lang', { lang: event.target.value });
   }
 }
-
-
