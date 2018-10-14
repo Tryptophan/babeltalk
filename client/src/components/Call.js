@@ -28,8 +28,8 @@ export default class Call extends Component {
         <div className='Call'>
           {this.state.call.from} is calling you...<br />
           <div>
-            <FaPhone className='CallUser' />
-            <FaPhone className='HangupUser' />
+            <FaPhone onClick={this.answerCall} className='CallUser' />
+            <FaPhone onClick={this.declineCall} className='HangupUser' />
           </div>
         </div>
       );
