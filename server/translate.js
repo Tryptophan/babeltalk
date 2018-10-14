@@ -18,7 +18,7 @@ const translate = (text, targetLang, sourceLang, callback) => {
   
 }
 
-export default {translate};
+module.exports = {translate};
 // translate('hello', 'ru', 'en', (translation) => {
 //     console.log(translation);
 // });
