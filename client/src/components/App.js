@@ -11,6 +11,7 @@ import Call from './Call';
 
 // CSS Import
 import './App.css';
+import { Splashscreen } from './Splashscreen';
 
 class App extends Component {
 
@@ -18,8 +19,10 @@ class App extends Component {
     super(props);
 
     this.state = {
-      lang: 'en'
+      lang: 'en',
+      username: ''
     };
+
 
     this.socket = io(process.env.REACT_APP_SOCKET_SERVER);
     this.socket.on('connect', () => {
@@ -31,19 +34,55 @@ class App extends Component {
     let langList = langs.map(lang => (
       <option value={lang.code} key={lang.code}>{lang.name}</option>
     ));
-    return (
-      <div className='App'>
-        <select value={this.state.lang} onChange={this.handleChange}>
-          {langList}
-        </select>
-        <Call socket={this.socket} />
-        <Users socket={this.socket} />
-        <div className='VideoChat'>
-          <Video lang={this.state.lang} socket={this.socket} />
-          <Chat lang={this.state.lang} socket={this.socket} />
+
+    if (!this.Splashscreen || !this.Splashscreen.state.userName) { // checks if there is no username
+      // render splashscreen if no username
+
+      console.log('rendering screen');
+      return (<div className='App'>
+
+        <Splashscreen ref={el => { this.Splashscreen = el }}></Splashscreen>
+
+      </div>);
+    }
+    else {
+      return (
+        <div className='App'>
+          <select value={this.state.lang} onChange={this.handleChange}>
+            {langList}
+          </select>
+          <Call socket={this.socket} />
+          <Users socket={this.socket} />
+          <div className='VideoChat'>
+            <Video lang={this.state.lang} socket={this.socket} />
+            <Chat lang={this.state.lang} socket={this.socket} />
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+  }
+
+  componentDidMount() {
+    let localLang = navigator.language;
+    langs.forEach(lang => {
+      if (lang.code === localLang) {
+        this.setState({
+          lang: localLang
+        });
+      }
+    });
+  }
+
+  
+
+  handleChange = (event) => {
+    console.log("lang change event");
+    console.log(event.target.value);
+    this.setState({
+      lang: event.target.value
+    });
+    // this.socket.emit(tell the server that language has changed)
+    this.socket.emit('lang', { lang: event.target.value });
   }
 
   componentDidMount() {
