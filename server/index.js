@@ -38,7 +38,7 @@ io.on('connection', (client) => {
     });
   });
 
-  client.on('transcript', chat => {
+  client.on('transcript', transcipt => {
     console.log("server transcript");
 
     let senderLang = null;
@@ -61,12 +61,12 @@ io.on('connection', (client) => {
     });
 
     if (receiverLang !== senderLang) {
-      translate(chat.message, receiverLang, senderLang, (translation) => {
-        chat.message = translation[0].translatedText;
-        console.log(chat.message);
+      translate(transcipt, receiverLang, senderLang, (translation) => {
+        transcipt = translation[0].translatedText;
+        console.log(transcipt);
         for (let room in client.rooms) {
           if (room !== client.id) {
-            io.to(receiver).emit('transcript', chat);
+            io.to(receiver).emit('transcript', transcipt);
           }
         }
       });
@@ -75,11 +75,10 @@ io.on('connection', (client) => {
       //Send the chat to the receiver in the room
       for (let room in client.rooms) {
         if (room !== client.id) {
-          io.to(receiver).emit('transcript', chat);
+          io.to(receiver).emit('transcript', transcipt);
         }
       }
     }
-
   });
 
   // Send chat message

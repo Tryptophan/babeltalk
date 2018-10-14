@@ -10,7 +10,10 @@ export default class Video extends Component {
 
     this.state = {
       mic: true,
-      camera: true
+      camera: true,
+      leftSubtitles: [],
+      rightSubtitles: [],
+      interimTranscript: ''
     };
 
     this.socket = this.props.socket;
@@ -24,14 +27,43 @@ export default class Video extends Component {
     // WebRTC
     this.socket.on('offer', this.onOffer);
     this.socket.on('answer', this.onAnswer);
+
+    // Speech
+    this.recognition = new window.webkitSpeechRecognition();
+    this.recognition.continuous = true;
+    this.recognition.lang = 'en';
+    this.recognition.interimResults = true;
+    this.recognition.onresult = this.onTranscript;
+
+    this.socket.on('transcript', this.receivedTranslation);
   }
 
   render() {
+
+    let leftSubtitles = this.state.leftSubtitles.map(transcript => (
+      <div key={Date.now()} className='Subtitle'>{transcript}</div>
+    ));
+
+    let rightSubtitles = this.state.rightSubtitles.map(transcript => (
+      <div key={Date.now()} className='Subtitle'>{transcript}</div>
+    ));
+
     return (
       <div className='Video'>
         {/* Video tag to render the video stream */}
         <video ref={el => { this.video = el }} autoPlay muted={this.state.toggleMic} />
         <video className='Local' ref={el => { this.localVideo = el }} autoPlay muted={true} />
+
+        {/* Subtitles for voice */}
+        <div className='Subtitles'>
+          <div className='LeftSubtitles'>
+            {leftSubtitles}
+          </div>
+          <div className='RightSubtitles'>
+            {rightSubtitles}
+            {this.state.interimTranscript.length > 0 ? <div className='Subtitle InterimTranscript'>{this.state.interimTranscript}</div> : null}
+          </div>
+        </div>
         {/* Absolute positioned controls (mute mic, mute video, end call) */}
         <div className='Controls'>
           <div onClick={this.toggleMic}>{this.state.mic ? <FaMicrophoneSlash /> : <FaMicrophone />}</div>
@@ -71,16 +103,37 @@ export default class Video extends Component {
     });
   }
 
-  receivedTranslation = () => {
-
+  receivedTranslation = (transcript) => {
+    this.setState({
+      leftSubtitles: this.state.leftSubtitles.concat(transcript)
+    });
   }
 
-  sendTranscript = () => {
-
+  onTranscript = (event) => {
+    let results = event.results;
+    this.setState({
+      interimTranscript: ''
+    })
+    for (let i = event.resultIndex; i < results.length; ++i) {
+      let transcript = results[i][0].transcript;
+      if (results[i].isFinal) {
+        this.socket.emit('transcript', transcript);
+        this.setState({
+          interimTranscript: '',
+          rightSubtitles: this.state.rightSubtitles.concat(transcript)
+        });
+      } else {
+        this.setState({
+          interimTranscript: this.state.interimTranscript + transcript + ' '
+        });
+      }
+    }
   }
 
   // Send offer to the peer to peer using sockets
   onAnsweredCall = (call) => {
+
+    this.recognition.start();
 
     navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
       this.localVideo.srcObject = localStream;
@@ -103,6 +156,7 @@ export default class Video extends Component {
   onOffer = (data) => {
 
     if (!this.peer) {
+      this.recognition.start();
       navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
 
         this.localVideo.srcObject = localStream;

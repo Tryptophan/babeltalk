@@ -7,12 +7,12 @@ const translate = (text, targetLang, sourceLang, callback) => {
     q: text,
     target: targetLang,
     source: sourceLang
-  }).then(data => {
-    console.log(data.data.data.translations);
-    callback(data.data.data.translations)
+  }).then(res => {
+    console.log(res.data.data.translations);
+    callback(res.data.data.translations)
   })
   .catch(err =>{
-    console.log(err);
+    console.log(err.response.data);
     callback(null, err)
   });
   
