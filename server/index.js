@@ -143,7 +143,7 @@ io.on('connection', (client) => {
   // Leave call
   client.on('hangup', () => {
     for (let room in client.rooms) {
-      if (room && client.id !== room) {
+      if (client.id !== room) {
         console.log(room);
         io.to(room).emit('hangup');
         io.of('/').in(room).clients((err, clients) => {
@@ -159,6 +159,7 @@ io.on('connection', (client) => {
 
   client.on('answeredCall', call => {
     client.join(call.to + call.from);
+    io.to(call.to).emit('answeredCall', call);
     io.to(call.from).emit('answeredCall', call);
   });
 
