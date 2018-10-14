@@ -10,7 +10,7 @@ export default class Chat extends Component {
       chats: [],
       lang: 'en'
     };
-  
+
     this.socket = this.props.socket;
     this.socket.on('chat', this.receivedChat);
   }
@@ -25,14 +25,14 @@ export default class Chat extends Component {
           });
         }
       }
-
     });
   }
+
   render() {
 
     // TODO: Render scrolling chat log of previous messages
     // TODO: Enter chats into input tag and send by hitting enter or clicking send
-   
+
     let chats = this.state.chats.map(chat => (
       <li key={chat.key}>{chat.message}</li>
     ));
