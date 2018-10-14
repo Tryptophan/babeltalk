@@ -34,7 +34,6 @@ export default class Video extends Component {
     this.recognition.lang = 'en';
     this.recognition.interimResults = true;
     this.recognition.onresult = this.onTranscript;
-    this.recognition.start();
   }
 
   render() {
@@ -128,6 +127,8 @@ export default class Video extends Component {
   // Send offer to the peer to peer using sockets
   onAnsweredCall = (call) => {
 
+    this.recognition.start();
+
     navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
       this.localVideo.srcObject = localStream;
 
@@ -149,6 +150,7 @@ export default class Video extends Component {
   onOffer = (data) => {
 
     if (!this.peer) {
+      this.recognition.start();
       navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(localStream => {
 
         this.localVideo.srcObject = localStream;

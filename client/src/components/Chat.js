@@ -16,7 +16,7 @@ export default class Chat extends Component {
   }
 
   componentDidMount() {
-    let localLang = navigator.languages;
+    let localLang = navigator.language;
     langs.forEach(lang => {
       for (let i = 0; i < localLang.length; i++) {
         if (lang.code === localLang[i]) {
