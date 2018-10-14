@@ -44,3 +44,26 @@
 .Video .Controls .Hangup {
   transform: rotate(225deg);
 }
+
+.LeftSubtitles {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+}
+
+.RightSubtitles {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+
+.Subtitle {
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.InterimTranscript {
+  color: gray;
+}
