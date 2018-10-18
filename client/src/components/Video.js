@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { FaPhone, FaMicrophone } from 'react-icons/fa';
 import Peer from 'simple-peer';
 import './Video.css';
 
@@ -17,9 +16,6 @@ export default class Video extends Component {
 
     this.socket = this.props.socket;
 
-    // Call we started was answered
-    this.socket.on('answeredCall', this.onAnsweredCall);
-
     // Call was ended
     this.socket.on('hangup', this.onHangup);
 
@@ -31,11 +27,12 @@ export default class Video extends Component {
     this.recognition = new window.webkitSpeechRecognition();
     this.recognition.interimResults = true;
     this.recognition.onresult = this.onTranscript;
+    console.log(this.props.lang);
+    this.recognition.lang = this.props.lang;
     
     // Synthesis
     this.synth = window.speechSynthesis;
-
-    this.socket.on('transcript', this.receivedTranslation);
+    this.socket.on('transcript', this.onReceivedTranscript);
   }
 
   render() {
@@ -66,8 +63,8 @@ export default class Video extends Component {
         </div>
         {/* Absolute positioned controls (mute mic, mute video, end call) */}
         <div className='Controls'>
-          <div onMouseDown={this.record} className={['Mic', this.state.recording ? 'Recording' : null].join(' ')} onMouseUp={this.stopRecording}><FaMicrophone /></div>
-          <div onClick={this.hangup} className='Hangup'><FaPhone /></div>
+          <div onMouseDown={this.record} className={['Mic', this.state.recording ? 'Recording' : null].join(' ')} onMouseUp={this.stopRecording}><i className='fa fa-microphone'/></div>
+          <div onClick={this.hangup} className='Hangup'><i className='fa fa-phone'/></div>
         </div>
       </div >
     );
@@ -106,8 +103,7 @@ export default class Video extends Component {
     });
   }
 
-  receivedTranslation = (transcript) => {
-    console.log('RECEIVED TRANSCRIPT:', transcript);
+  onReceivedTranscript = (transcript) => {
     this.setState({
       leftSubtitles: this.state.leftSubtitles.concat(transcript)
     });
@@ -135,7 +131,7 @@ export default class Video extends Component {
     let results = event.results;
     this.setState({
       interimTranscript: ''
-    })
+    });
     for (let i = event.resultIndex; i < results.length; ++i) {
       let transcript = results[i][0].transcript;
       if (results[i].isFinal) {

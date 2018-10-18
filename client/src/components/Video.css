@@ -20,7 +20,12 @@
   bottom: 30px;
   display: flex;
   justify-content: space-between;
-  width: 15%;
+  width: 50%;
+}
+
+.Video .Controls div i {
+  font-size: 20px;
+  text-align: center;
 }
 
 .Video .Controls .Mic {
@@ -32,26 +37,23 @@
   color: red;
 }
 
+.video .Controls .Hangup {
+  /* transform: rotate(18deg); */
+}
+
 .Video .Controls div {
   color: white;
   background-color: red;
-  height: 20px;
-  display: inline-block;
-  padding: 20px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   border-radius: 100%;
-}
-
-.Video .Controls div svg {
-  width: 20px;
-  height: 20px;
 }
 
 .Video video {
   background-color: black;
-}
-
-.Video .Controls .Hangup {
-  transform: rotate(225deg);
 }
 
 .LeftSubtitles {

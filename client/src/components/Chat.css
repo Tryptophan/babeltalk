@@ -1,28 +1,30 @@
 .Chat {
   width: 100%;
+  flex-grow: 1;
   height: 30vh;
   display: flex;
   flex-direction: column;
 }
 
-.ChatControls {
-  margin-bottom: 10px;
+.Chat .Messages {
+  padding: 10px;
 }
 
-.Chat input {
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #CCC;
-  margin-right: 10px;
+.ChatControls .input, .button {
+  border-radius: 0px !important;
+}
+
+.ChatControls .Input {
   flex-grow: 1;
 }
 
-.Chat button {
-  padding: 5px;
-  border-radius: 5px;
-  color: white;
-  background-color: gray;
-  border: none;
+.Messages {
+  flex-grow: 1;
+}
+
+.Chat input {
+  text-align: left;
+  margin: 0;
 }
 
 .ChatDate {

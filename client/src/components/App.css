@@ -5,13 +5,15 @@
 
 .App .VideoChat {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 select {
   position: absolute;
   top: 10px;
   right: 10px;
-  z-index: 899;
+  z-index: 999;
 }
 
 .Splash {
@@ -22,7 +24,6 @@ select {
   width: 100%;
   margin: auto;
   height: 100vh;
-  background: url('../bg.jpg');
 }
 
 .Title {
@@ -34,11 +35,30 @@ select {
 .Subtitle {
   font-size: 24px;
   background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
 }
 
-.Splash input {
-  font-size: 18px;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid gray;
+.Splash .Actions button {
+  margin-right: 20px;
+}
+
+.Splash .Actions button, input {
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .Title {
+    font-size: 44px;
+  }
+  
+  .Subtitle {
+    font-size: 18px;
+  }
+
+  .Splash .Actions button, input {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    width: 100%;
+  }
 }

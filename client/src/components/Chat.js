@@ -25,10 +25,16 @@ export default class Chat extends Component {
 
     return (
       <div className='Chat'>
-        <Scrollbars className='Messages' ref={el => { this.scroll = el }}><div>{chats}</div></Scrollbars>
+        <Scrollbars ref={el => { this.scroll = el }}><div className='Messages'>{chats}</div></Scrollbars>
         <div className='ChatControls'>
-          <input ref={el => { this.input = el }} onKeyPress={this.onKeyPress} type='text' placeholder='Type here!' />
-          <button onClick={this.sendClicked}>Send</button>
+          <div className='field has-addons'>
+            <div className='control Input'>
+              <input className='input' ref={el => { this.input = el }} onKeyPress={this.onKeyPress} type='text' placeholder='Type here!' />
+            </div>
+            <div className='control'>
+              <button onClick={this.onSendClicked} className='button'><i className='fa fa-send' /></button>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -38,17 +44,24 @@ export default class Chat extends Component {
     this.scroll.scrollToBottom();
   }
 
+  componentDidMount() {
+    let message = 'Send this code to others: ' + this.props.room + ' to join your room.';
+    this.setState({
+      chats: this.state.chats.concat({ key: Date.now(), message: message })
+    });
+  }
+
   onKeyPress = (event) => {
     if (event.key === 'Enter') {
       console.log("enter");
-      let text = event.target.value;
+      let text = this.input.value;
       this.sendChat(text);
     }
-
   }
 
-  sendClicked = () => {
-    this.sendChat(this.input.value);
+  onSendClicked = () => {
+    let text = this.input.value;
+    this.sendChat(text);
   }
 
   receivedChat = (chat) => {
@@ -63,7 +76,7 @@ export default class Chat extends Component {
   }
 
   sendChat = (text) => {
-    this.socket.emit('chat', { message: text, lang: this.props.lang });
+    this.socket.emit('chat', { message: text });
     this.input.value = null;
   }
 }
